@@ -1,8 +1,11 @@
 const Product = require("../Models/productModel");
 
 const getAllProductsStatic = async (req, res, next) => {
-  // throw new Error("Async error");
-  res.status(200).json({ msg: "success" });
+  const search = "dining";
+  const products = await Product.find({
+    name: { $regex: search, $options: "i" },
+  });
+  res.status(200).json({ products });
 };
 
 const getAllProducts = async (req, res) => {
@@ -15,9 +18,10 @@ const getAllProducts = async (req, res) => {
     queryObject.company = company;
   }
   if (name) {
-    queryObject.name = name;
+    queryObject.name = { $regex: name, $options: "i" };
   }
-  console.log(queryObject);
+
+  
   const products = await Product.find(queryObject);
   res.status(200).json({ products, nhbits: products.length });
 };
